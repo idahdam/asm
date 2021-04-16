@@ -5,7 +5,7 @@
 ; 
 ; Anggota:
 ; 1. Muhammad Hadi - 1906355623
-; 2. Ahmad Fakhri Mirfananda - 190630065
+; 2. Ahmad Fakhri Mirfananda - 1906300656
 ; 3. Ananda Luqman Mahendra - 190630067
 ; 4. Seno Aji Wicaksono - 1906300851
 ;                                         ;
