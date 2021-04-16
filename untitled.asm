@@ -9,7 +9,7 @@ DELAY_MED equ 9h
 DELAY_HARD equ 8h ;R0
 PATTERN equ 2h ;R1
 SHIFT_AMOUNT equ 9h ;R2
-rand16reg equ 0x21	;two bytes
+rand16reg equ 0x21 ;two bytes
 
 ; main program calls
 ORG 0h
@@ -23,6 +23,10 @@ COUNTUP:
 START_SHIFT:
 	JNB P2.0, SHIFTING
 	INC R3
+	MOV A, R3
+	CPL A
+	MOV P0, A
+	CLR A
 	JMP SHIFTING
 	
 SHIFTING:
@@ -34,6 +38,7 @@ START_GAME:
 	;MOV A,#11111111B ; loads A with all 1's
 	MOV P0,#00000000B ; initializes P0 as output port
 	MOV R3, #0h
+	MOV R5, #0h
 	JNB P2.7, EASY
 	JNB P2.3, MEDIUM
 	JNB P2.2, HARD
@@ -92,11 +97,13 @@ MAIN_GAME:
 	CPL A
 	MOV P3, A
 	MOV B, A
+	MOV R5, B
 	;CLR A ; take pattern
 	CALL DELAY
 	CALL BACK
 	XRL A, B
-	XRL A, B
+	SUBB A, R5
+	ADD A, R5
 	CALL COUNTUP
 	DEC R1
 	ANL A, #01010101b
@@ -179,35 +186,34 @@ CHECK_DONE:
 
 DISPLAY:MOVC A,@A+DPTR ; gets digit drive pattern for the current key from LUT
 	CPL A
-        MOV P0,A
+        ;MOV P0,A
         CPL A      ; puts corresponding digit drive pattern into P0
         RET
 
 ; randomizer
 
 rand16:	
-	ADDC A, #01010101b
-;	mov	a, rand16reg
-;	jnz	rand16b
-;	mov	a, rand16reg+1
-;	mov 	b, a
-;	jnz	rand16b
-;	cpl	a
-;	mov	rand16reg, a
-;	mov	rand16reg+1, a
-;rand16b:anl	a, #11010000b
-;	mov	c, p
-;	mov	a, rand16reg
-;	jnb	acc.3, rand16c
-;	cpl	c
-;rand16c:rlc	a
-;	mov	rand16reg, a
-;	mov	r6, a
-;	mov	b, a
-;	mov	a, rand16reg+1
-;	rlc	a
-;	mov	rand16reg+1, a
-	MOV	b, a
+	;ADDC A, #01010101b
+	mov	a, rand16reg
+	jnz	rand16b
+	mov	a, rand16reg+1
+	mov 	b, a
+	jnz	rand16b
+	cpl	a
+	mov	rand16reg, a
+	mov	rand16reg+1, a
+rand16b:anl	a, #11010000b
+	mov	c, p
+	mov	a, rand16reg
+	jnb	acc.3, rand16c
+	cpl	c
+rand16c:rlc	a
+	mov	rand16reg, a
+	mov	r6, a
+	mov	b, a
+	mov	a, rand16reg+1
+	rlc	a
+	mov	rand16reg+1, a
 	ret
 	
 ORG 200h
