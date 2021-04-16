@@ -58,15 +58,15 @@ START_GAME: ;Memulai game
 
 EASY:
 	SETB P2.7
-	CALL SET_DIFFICULTY_E ;Memanggil 
+	CALL SET_DIFFICULTY_E ;Memanggil fungsi untuk set difficulty delay easy
 	JMP MAIN_GAME
 MEDIUM:
 	SETB P2.3
-	CALL SET_DIFFICULTY_M
+	CALL SET_DIFFICULTY_M ;Memanggil fungsi untuk set difficulty delay medium
 	JMP MAIN_GAME
 HARD:
 	SETB P2.2
-	CALL SET_DIFFICULTY_H
+	CALL SET_DIFFICULTY_H ;Memanggil fungsi untuk set difficulty delay hard
 	JMP MAIN_GAME
 	
 SET_DIFFICULTY_E:
