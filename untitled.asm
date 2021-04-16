@@ -1,7 +1,11 @@
-; ===============================================;
-; whack a mole					 ;
-; group x					 ;
-; ===============================================;
+; ================================================================;
+; Kelompok B5 - Praktikum Siber Fisik		 		  ;
+; Whack A Mole					 		  ;
+; Description					 		  :
+; Permainan Whack A Mole ini merupakan permainan yang sering 	  ;
+; ditemukan pada arcade dengan memukul mole yang muncul. 	  ;
+; Di sini kami mencoba melakukan pengaplikasian dengan MCU 8051	  ;
+; ================================================================;
 
 ; declaring delay per difficulties
 DELAY_EASY equ 10h
@@ -20,6 +24,8 @@ COUNTUP:
 	DJNZ R2, START_SHIFT
 	RET
 	
+
+; to start shifting subroutine
 START_SHIFT:
 	JNB P2.0, SHIFTING
 	INC R3
@@ -33,6 +39,7 @@ SHIFTING:
 	RR A
 	JMP COUNTUP
 	
+; main program
 START_GAME:
 	MOV DPTR, #LUT ;moves starting address of LUT to DPTR
 	;MOV A,#11111111B ; loads A with all 1's
@@ -44,6 +51,7 @@ START_GAME:
 	JNB P2.2, HARD
 	JMP START_GAME
 
+; difficulties
 EASY:
 	SETB P2.7
 	CALL SET_DIFFICULTY_E
@@ -56,7 +64,8 @@ HARD:
 	SETB P2.2
 	CALL SET_DIFFICULTY_H
 	JMP MAIN_GAME
-	
+
+; set difficulty chosen above
 SET_DIFFICULTY_E:
 	; set delay di sini untuk easy
 	MOV R0, #DELAY_EASY
@@ -73,6 +82,7 @@ SET_DIFFICULTY_H:
 	MOV R1, #PATTERN
 	RET
 
+; delay checking
 DELAY:
 	DJNZ R7, DELAY
 	RET
@@ -89,6 +99,7 @@ DELAY:
 ;	RET
 
 
+; main routine
 MAIN_GAME:
 	MOV R7, #7h
 	MOV R2, #SHIFT_AMOUNT
@@ -111,6 +122,7 @@ MAIN_GAME:
 	JMP START_GAME
 
 
+; end call
 EXIT_GAME:
 	JMP END_GAME
 
