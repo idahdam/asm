@@ -1,8 +1,19 @@
-
-; ===============================================;
-; whack a mole					 ;
-; group x					 ;
-; ===============================================;
+; ================================================================;
+; Kelompok B5 - Praktikum Siber Fisik		 		  ;
+; 
+; Whack A Mole					 		  ;
+; 
+; Anggota:
+; 1. Muhammad Hadi - 1906355623
+; 2. Ahmad Fakhri Mirfananda - 190630065
+; 3. Ananda Luqman Mahendra - 190630067
+; 4. Seno Aji Wicaksono - 1906300851
+;                                         ;
+; Description:					 		  ;
+; Permainan Whack A Mole ini merupakan permainan yang sering 	  ;
+; ditemukan pada arcade dengan memukul mole yang muncul. 	  ;
+; Di sini kami mencoba melakukan pengaplikasian dengan MCU 8051	  ;
+; ================================================================;
 
 ; declaring delay per difficulties
 DELAY_EASY equ 10h
