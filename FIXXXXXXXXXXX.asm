@@ -16,23 +16,23 @@
 ; ================================================================;
 
 ; declaring delay per difficulties
-DELAY_EASY equ 10h
-DELAY_MED equ 6h
-DELAY_HARD equ 3h ;R0
-PATTERN equ 6h ;R1
-SHIFT_AMOUNT equ 9h ;R2
+DELAY_EASY equ 10h ; membuat variabel untuk delay easy
+DELAY_MED equ 6h ; membuat variabel untuk delay medium
+DELAY_HARD equ 3h ; membuat variabel untuk delay hard
+PATTERN equ 6h ;banyaknya pattern yang akan muncul yaitu 6x
+SHIFT_AMOUNT equ 9h ;banyaknya shift yang akan dilakukan pada register A
 rand16reg equ 021h ;two bytes
 
 ; main program calls
 ORG 0h
-	JMP START_GAME
+	JMP START_GAME ;Jump ke Start game
 	
-COUNTUP:
+COUNTUP: ;Count up untuk menambah skor
 	MOV P2, A
 	DJNZ R2, START_SHIFT
 	RET
 	
-START_SHIFT:
+START_SHIFT: ;Shifting pada register A 
 	JNB P2.0, SHIFTING
 	INC R3
 	MOV A, R3
@@ -41,24 +41,24 @@ START_SHIFT:
 	CLR A
 	JMP SHIFTING
 	
-SHIFTING:
+SHIFTING: ;Proses Shifting
 	RR A
 	JMP COUNTUP
 	
-START_GAME:
-	MOV DPTR, #LUT ;moves starting address of LUT to DPTR
-	;MOV A,#11111111B ; loads A with all 1's
-	MOV P0,#00000000B ; initializes P0 as output port
-	MOV R3, #0FFh
+START_GAME: ;Memulai game
+	MOV DPTR, #LUT ;Mengisi DPTR dengan alamat Look up table
+	;MOV A,#11111111B ; Memasukkan A dengan 1 semua
+	MOV P0,#00000000B ; P0 sebagai output
+	MOV R3, #0FFh ;Mengisi R3 untuk skor dengan FF agar jika diincrement akan dimulai dari 0
 	MOV R5, #0h
-	JNB P2.7, EASY
-	JNB P2.3, MEDIUM
-	JNB P2.2, HARD
-	JMP START_GAME
+	JNB P2.7, EASY ;Jump jika difficulty = easy 
+	JNB P2.3, MEDIUM ;Jump jika difficulty = medium 
+	JNB P2.2, HARD ;Jump jika difficulty = hard 
+	JMP START_GAME ;Looping kembali ke awal game jika satu round sudah selesai
 
 EASY:
 	SETB P2.7
-	CALL SET_DIFFICULTY_E
+	CALL SET_DIFFICULTY_E ;Memanggil 
 	JMP MAIN_GAME
 MEDIUM:
 	SETB P2.3
@@ -76,17 +76,19 @@ SET_DIFFICULTY_E:
 	RET
 	
 SET_DIFFICULTY_M:
+	; set delay di sini untuk medium
 	MOV R0, #DELAY_MED
 	MOV R1, #PATTERN
 	RET
 	
 SET_DIFFICULTY_H:
+	; set delay di sini untuk hard
 	MOV R0, #DELAY_HARD
 	MOV R1, #PATTERN
 	RET
 
 DELAY:
-	
+	;Fungsi delay berdasarkan timer yang dipengaruhi difficulty
 	MOV TMOD, #00000001B
 	MOV TL1, #00H 
 	MOV TH1, #00H
@@ -96,12 +98,12 @@ AGAIN:
 	JNB TF1, AGAIN
 	CLR TR1
 	CLR TF1
-	DJNZ R0, DELAY
+	DJNZ R0, DELAY ;looping untuk banyaknya delay berdasarkan difficulty
 	RET
 
 
 MAIN_GAME:
-	 
+	;Fungsi main game mulai disini
 	MOV R2, #SHIFT_AMOUNT
 	CALL RAND16
 	MOV A, B
@@ -123,19 +125,19 @@ MAIN_GAME:
 	JMP START_GAME
 
 
-EXIT_GAME:
+EXIT_GAME: ;Fungsi untuk keluar dari game
 	JMP END_GAME
 
-; keypad implementation
+; implementasi keypad
 BACK:
-	MOV P1,#11111111B ;loads P1 with all 1's
-     	CLR P1.0  ;makes row 1 low
-     	JB P1.4,NEXT1  ; checks whether column 1 is low and jumps to NEXT1 if not low
-     	MOV A,#0D   ; loads a with 0D if column is low (that means key 1 is pressed)
-     	ACALL DISPLAY  ; calls DISPLAY subroutine
+	MOV P1,#11111111B ;Memasukkan P1 dengan 1 semua
+     	CLR P1.0  ;membuat p1.0 atau baris pertama menjadi low
+     	JB P1.4,NEXT1  ; memeriksa jika kolom 1 low dan jump ke NEXT1 jika tidak low
+     	MOV A,#0D   ; Memasukkan A dengan nilai 0 jika kolom low yaitu saat switch ditekan
+     	ACALL DISPLAY  ; Memanggil subroutine untuk display
      	
 NEXT1:
-	JB P1.5,NEXT2 ; checks whether column 2 is low and so on...
+	JB P1.5,NEXT2 ; Prosedur yang sama dengan pada BACK dilakukan pada semua subroutine next lainnya
 	MOV A,#1D
 	ACALL DISPLAY
 NEXT2:
@@ -193,16 +195,16 @@ NEXT11:
        	MOV A,#14D
        	ACALL DISPLAY
        	
-CHECK_DONE:
+CHECK_DONE: ;Pemeriksaan jika selesai
 	RET
 
-DISPLAY:MOVC A,@A+DPTR ; gets digit drive pattern for the current key from LUT
+DISPLAY:MOVC A,@A+DPTR ;Pengambilan data dari LUT berdasarkan skor
 	CPL A
         ;MOV P0,A
-        CPL A      ; puts corresponding digit drive pattern into P0
+        CPL A      
         RET
 
-; randomizer
+; randomizer untuk pattern
 
 rand16:	
 	;ADDC A, #01010101b
@@ -229,8 +231,8 @@ rand16c:rlc	a
 	ret
 	
 ORG 200h
-LUT: 
-	DB 10000000B ; Look up table starts here
+LUT: ;Lookuptable untuk pemeriksaan pattern dengan input
+	DB 10000000B 
 	DB 01000000B 
 	DB 00100000B
 	DB 00000000B
