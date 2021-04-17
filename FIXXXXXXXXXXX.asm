@@ -1,4 +1,4 @@
-; ================================================================;
+	; ================================================================;
 ; Kelompok B5 - Praktikum Siber Fisik		 		  ;
 ; 
 ; Whack A Mole					 		  ;
@@ -52,6 +52,7 @@ SHIFTING:
 START_GAME:
 	MOV DPTR, #LUT ;moves starting address of LUT to DPTR
 	;MOV A,#11111111B ; loads A with all 1's
+	MOV P2,#00000000B; emptying
 	MOV P0,#00000000B ; initializes P0 as output port
 	MOV R3, #0FFh
 	MOV R5, #0h
