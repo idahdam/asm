@@ -36,13 +36,30 @@ LETSGO:
 	DJNZ R2, START_SHIFT
 	RET
 	
+
+; to start shifting subroutine
 START_SHIFT:
 	JNB P2.0, SHIFTING
 	INC R3
+	INC R4
 	MOV A, R3
 	CPL A
 	MOV P0, A
 	CLR A
+	CJNE R4, #2h, SHIFTING
+	MOV A, R3
+	SUBB A, #2h
+	MOV R3, A
+	MOV A, R4
+	SUBB A, #2h
+	MOV R4, A
+	CJNE R4, #1h, SHIFTING
+	MOV A, R3
+	SUBB A, #1h
+	MOV R3, A
+	MOV A, R4
+	SUBB A, #1h
+	MOV R4, A
 	JMP SHIFTING
 	
 SHIFTING:
@@ -52,8 +69,7 @@ SHIFTING:
 START_GAME:
 	MOV DPTR, #LUT ;moves starting address of LUT to DPTR
 	;MOV A,#11111111B ; loads A with all 1's
-	MOV P2,#00000000B; emptying
-	MOV P0,#00000000B ; initializes P0 as output port
+	MOV P0,#0ffh ; initializes P0 as output port
 	MOV R3, #0FFh
 	MOV R5, #0h
 	JNB P2.7, EASY
